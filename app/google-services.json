@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "350587044110",
+    "firebase_url": "https://meteo-79127-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "meteo-79127",
+    "storage_bucket": "meteo-79127.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350587044110:android:e8fdfb923fb3338cbed75f",
+        "android_client_info": {
+          "package_name": "com.iut.meteoreo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350587044110-ipa8tip67hhn06dstkr313ctob1eqthe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtGgIC7lvpMYzOC40hy3V5L9PwCXvEp88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350587044110-ipa8tip67hhn06dstkr313ctob1eqthe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
