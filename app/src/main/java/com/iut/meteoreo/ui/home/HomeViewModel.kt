@@ -18,18 +18,17 @@ class HomeViewModel : ViewModel() {
     val lastMeasure: LiveData<Measure> = _lastMeasure
 
     fun getStation(id: Int) {
-        val listRef = database.child("stations")
-        val query = listRef.orderByChild("id").equalTo(id.toDouble())
+        val listRef = database.child("stations").child("$id")
 
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
+        listRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (data in snapshot.children) {
-                    val tmp = data.getValue(Station::class.java)
-                    if (tmp?.id == 1) {
-                        _station.value = tmp
-                        getActualMeasure()
-                    }
+                val measures = mutableListOf<Measure>()
+                snapshot.child("measures").children.forEach {
+                    val measure = it.getValue(Measure::class.java)
+                    measure?.let { it1 -> measures.add(it1) }
                 }
+                _station.value = Station(snapshot.child("name").value as String, measures)
+                getActualMeasure()
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("QUERYFIREBASE", "$error")
@@ -39,14 +38,13 @@ class HomeViewModel : ViewModel() {
 
     fun getActualMeasure() {
         val list = _station.value?.measures
-        Log.d("QUERYFIREBASE", "getactual: $list")
-        _lastMeasure.value = list?.get(0)
+        _lastMeasure.value = list?.last()
     }
 
     fun fakeValue() {
-        val measure = arrayListOf(Measure(System.currentTimeMillis(), 12.0, 14.0, 45.0, 1020.0, 30.0, 1.2))
-        val station = Station(1, "Extérieur", measure)
-        database.child("stations").push().setValue(station)
+        val stationPath = database.child("stations").child("1")
+        stationPath.child("name").setValue("Extérieur")
+        stationPath.child("measures").push().setValue(Measure(System.currentTimeMillis(), -20.0, 22.3, 60.0, 300.0, 4.0, 1.9))
     }
 
 }
