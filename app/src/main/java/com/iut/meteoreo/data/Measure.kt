@@ -1,13 +1,11 @@
 package com.iut.meteoreo.data
 
 data class Measure(
-    val id: Int,
-    val stationId: Int,
-    val date: String,
-    val temperature: Int,
-    val windSpeed: Double,
-    val windDirection: Int,
-    val airPressure: Double,
-    val humidity: Double,
-    val uvValue: Double
+    val timestamp: Long? = null,
+    val temperature: Double? = null,
+    val windSpeed: Double? = null,
+    val windDirection: Double? = null,
+    val airPressure: Double? = null,
+    val humidity: Double? = null,
+    val uvValue: Double? = null
 )

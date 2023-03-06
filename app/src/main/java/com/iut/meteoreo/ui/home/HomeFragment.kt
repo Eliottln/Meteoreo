@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.iut.meteoreo.databinding.FragmentHomeBinding
@@ -25,10 +24,16 @@ class HomeFragment : Fragment() {
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        val textView: TextView = binding.actualTemperature
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        homeViewModel.lastMeasure.observe(viewLifecycleOwner) {
+            binding.actualTemperature.text = "${it.temperature}°C"
+            binding.wetValue.text = "${it.humidity}%"
+            binding.windValue.text = "${it.temperature} km/h"
+            binding.uvValue.text = "${it.temperature}"
+            binding.pressureValue.text = "${it.airPressure} hPa"
         }
+
+        homeViewModel.getStation(1)
+//        homeViewModel.fakeValue()
         return binding.root
     }
 
