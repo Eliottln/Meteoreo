@@ -8,6 +8,7 @@ import com.google.firebase.database.*
 import com.iut.meteoreo.data.DayTemperature
 import com.iut.meteoreo.data.Measure
 import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -63,10 +64,9 @@ class HomeViewModel : ViewModel() {
         for (day in 0..6) {
             val date = LocalDate.now().minusDays(day.toLong())
             _daysMeasures.add(DayTemperature(date.dayOfWeek.toString(), 0.0, 0.0))
-
+            val timestamp = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
             val listRef = database.child("stations").child("$_stationId").child("measures")
-                .orderByChild("temperature")
-            val query = listRef.startAt(date.toString()).endBefore(date.plusDays(1).toString())
+            val query = listRef.orderByChild("timestamp").startAt(timestamp.toString()).endBefore((timestamp + 86400000).toString())
             query.limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     Log.d("QUERYFIREBASE", "$dataSnapshot")
@@ -102,7 +102,7 @@ class HomeViewModel : ViewModel() {
         val stationPath = database.child("stations").child("1")
         stationPath.child("name").setValue("Extérieur")
         stationPath.child("measures").push()
-            .setValue(Measure(System.currentTimeMillis(), 10.0, 22.3, 60.0, 300.0, 4.0, 1.9))
+            .setValue(Measure(System.currentTimeMillis().toString(), 10.0, 22.3, 60.0, 300.0, 4.0, 1.9))
     }
 
 }
