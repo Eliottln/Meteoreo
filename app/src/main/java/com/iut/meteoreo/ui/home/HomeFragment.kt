@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.iut.meteoreo.databinding.FragmentHomeBinding
+import com.iut.meteoreo.ui.home.adapter.HomeDaysAdapter
 
 class HomeFragment : Fragment() {
 
@@ -24,6 +26,12 @@ class HomeFragment : Fragment() {
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        val daysListAdapter = HomeDaysAdapter(requireContext()) {
+
+        }
+        binding.daysList.adapter = daysListAdapter
+        binding.daysList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
         homeViewModel.lastMeasure.observe(viewLifecycleOwner) {
             binding.actualTemperature.text = "${it.temperature}°C"
             binding.wetValue.text = "${it.humidity}%"
@@ -32,7 +40,13 @@ class HomeFragment : Fragment() {
             binding.pressureValue.text = "${it.airPressure} hPa"
         }
 
+        homeViewModel.lastDaysMeasures.observe(viewLifecycleOwner) {
+            daysListAdapter.daysList = it
+            daysListAdapter.notifyDataSetChanged()
+        }
+
         homeViewModel.getStation(1)
+        homeViewModel.getLastDays()
 //        homeViewModel.fakeValue()
         return binding.root
     }
