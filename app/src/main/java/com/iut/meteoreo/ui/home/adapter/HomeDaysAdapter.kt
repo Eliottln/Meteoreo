@@ -1,14 +1,14 @@
 package com.iut.meteoreo.ui.home.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.iut.meteoreo.data.DayTemperature
 import com.iut.meteoreo.databinding.ItemPreviousDaysBinding
+import com.iut.meteoreo.extensions.timestampStartOfDay
 import com.iut.meteoreo.extensions.toDayOfWeek
 
-class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int) -> Unit)) : RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
+class HomeDaysAdapter(private var onItemClicked: (timestamp: String) -> Unit) : RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
 
     var daysList: ArrayList<DayTemperature> = arrayListOf()
 
@@ -20,7 +20,7 @@ class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int
             binding.temp.text = "${day.maxTemperature?.temperature}°C / ${day.minTemperature?.temperature}°C"
 
             root.setOnClickListener {
-//                onItemClicked()
+                onItemClicked(day.day.timestampStartOfDay().toString())
             }
         }
     }

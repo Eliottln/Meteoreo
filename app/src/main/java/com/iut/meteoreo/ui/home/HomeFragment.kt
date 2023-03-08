@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.iut.meteoreo.R
 import com.iut.meteoreo.databinding.FragmentHomeBinding
 import com.iut.meteoreo.ui.home.adapter.HomeDaysAdapter
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,10 +23,10 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        val daysListAdapter = HomeDaysAdapter(requireContext()) {
-
+        val daysListAdapter = HomeDaysAdapter {
+            findNavController().navigate(R.id.action_nav_home_to_nav_day_details, bundleOf("timestamp" to it))
         }
         binding.daysList.adapter = daysListAdapter
         binding.daysList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -50,8 +49,4 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }
