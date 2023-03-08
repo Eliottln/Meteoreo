@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
 
         }
         binding.daysList.adapter = daysListAdapter
-        binding.daysList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.daysList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         homeViewModel.lastMeasure.observe(viewLifecycleOwner) {
             binding.actualTemperature.text = "${it.temperature}°C"

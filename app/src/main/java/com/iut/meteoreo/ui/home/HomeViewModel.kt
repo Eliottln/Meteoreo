@@ -84,7 +84,7 @@ class HomeViewModel : ViewModel() {
                                         postSnapshot.getValue(Measure::class.java)!!
                                     minTemp = measure.temperature!!
                                 }
-                                val formatter = DateTimeFormatter.ofPattern("EEE", Locale("fr"))
+                                val formatter = DateTimeFormatter.ofPattern("EEEE", Locale("fr"))
                                 _daysMeasures[day] = DayTemperature(date.format(formatter), maxTemp, minTemp)
                                 _lastDaysMeasures.value = ArrayList(_daysMeasures)
                             }

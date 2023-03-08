@@ -15,8 +15,7 @@ class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int
         fun bind(day: DayTemperature) = binding.apply {
 
             binding.day.text = day.day
-            binding.maxTemp.text = "${day.maxTemperature}°C"
-            binding.minTemp.text = "${day.minTemperature}°C"
+            binding.temp.text = "${day.maxTemperature}°C / ${day.minTemperature}°C"
 
             root.setOnClickListener {
 //                onItemClicked()
