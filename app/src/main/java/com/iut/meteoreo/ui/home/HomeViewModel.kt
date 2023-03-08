@@ -1,16 +1,14 @@
 package com.iut.meteoreo.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
 import com.iut.meteoreo.data.DayTemperature
 import com.iut.meteoreo.data.Measure
+import com.iut.meteoreo.extensions.timestampNextDay
+import com.iut.meteoreo.extensions.timestampStartOfDay
 import java.time.LocalDate
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeViewModel : ViewModel() {
@@ -26,22 +24,8 @@ class HomeViewModel : ViewModel() {
 
     fun getStation(id: Int) {
         _stationId = id
-        val listRef = database.child("stations").child("$id")
         getActualMeasure()
-//        listRef.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val measures = mutableListOf<Measure>()
-//                snapshot.child("measures").children.forEach {
-//                    val measure = it.getValue(Measure::class.java)
-//                    measure?.let { it1 -> measures.add(it1) }
-//                }
-//                _station.value = Station(snapshot.child("name").value as String, measures)
-//                getActualMeasure()
-//            }
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.w("QUERYFIREBASE", "$error")
-//            }
-//        })
+        getLastDays()
     }
 
     private fun getActualMeasure() {
@@ -53,39 +37,39 @@ class HomeViewModel : ViewModel() {
                     _lastMeasure.value = it.getValue(Measure::class.java)
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
             }
         })
     }
 
-    fun getLastDays() {
+    private fun getLastDays() {
         _daysMeasures.clear()
         for (day in 0..6) {
             val date = LocalDate.now().minusDays(day.toLong())
-            _daysMeasures.add(DayTemperature(date.dayOfWeek.toString(), 0.0, 0.0))
-            val timestamp = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-            val listRef = database.child("stations").child("$_stationId").child("measures")
-            val query = listRef.orderByChild("timestamp").startAt(timestamp.toString()).endBefore((timestamp + 86400000).toString())
+            _daysMeasures.add(DayTemperature(date, Measure(), Measure()))
+
+            val query = database
+                .child("stations")
+                .child("$_stationId")
+                .child("measures")
+                .orderByChild("timestamp")
+                .startAt(date.timestampStartOfDay().toString())
+                .endBefore(date.timestampNextDay().toString())
+
             query.limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    Log.d("QUERYFIREBASE", "$dataSnapshot")
-                    var maxTemp = 0.0
+                    var maxTemp = Measure()
                     for (postSnapshot in dataSnapshot.children) {
-                        val measure: Measure = postSnapshot.getValue(Measure::class.java)!!
-                        maxTemp = measure.temperature!!
+                        maxTemp = postSnapshot.getValue(Measure::class.java)!!
                     }
                     query.limitToFirst(1)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                var minTemp = 0.0
+                                var minTemp = Measure()
                                 for (postSnapshot in dataSnapshot.children) {
-                                    val measure: Measure =
-                                        postSnapshot.getValue(Measure::class.java)!!
-                                    minTemp = measure.temperature!!
+                                    minTemp = postSnapshot.getValue(Measure::class.java)!!
                                 }
-                                val formatter = DateTimeFormatter.ofPattern("EEEE", Locale("fr"))
-                                _daysMeasures[day] = DayTemperature(date.format(formatter), maxTemp, minTemp)
+                                _daysMeasures[day] = DayTemperature(date, maxTemp, minTemp)
                                 _lastDaysMeasures.value = ArrayList(_daysMeasures)
                             }
                             override fun onCancelled(error: DatabaseError) {

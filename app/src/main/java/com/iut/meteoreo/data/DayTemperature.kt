@@ -1,7 +1,9 @@
 package com.iut.meteoreo.data
 
+import java.time.LocalDate
+
 data class DayTemperature(
-    val day: String,
-    val maxTemperature: Double,
-    val minTemperature: Double
+    val day: LocalDate,
+    val maxTemperature: Measure? = null,
+    val minTemperature: Measure? = null
 )

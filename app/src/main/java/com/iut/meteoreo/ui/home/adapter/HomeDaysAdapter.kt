@@ -6,16 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.iut.meteoreo.data.DayTemperature
 import com.iut.meteoreo.databinding.ItemPreviousDaysBinding
+import com.iut.meteoreo.extensions.toDayOfWeek
 
-class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int) -> Unit)): RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
+class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int) -> Unit)) : RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
 
     var daysList: ArrayList<DayTemperature> = arrayListOf()
 
-    inner class ViewHolder(private val binding: ItemPreviousDaysBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemPreviousDaysBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(day: DayTemperature) = binding.apply {
 
-            binding.day.text = day.day
-            binding.temp.text = "${day.maxTemperature}°C / ${day.minTemperature}°C"
+            binding.day.text = day.day.toDayOfWeek()
+            binding.temp.text = "${day.maxTemperature?.temperature}°C / ${day.minTemperature?.temperature}°C"
 
             root.setOnClickListener {
 //                onItemClicked()
@@ -24,7 +26,8 @@ class HomeDaysAdapter(val context: Context, private var onItemClicked: ((id: Int
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemPreviousDaysBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemPreviousDaysBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

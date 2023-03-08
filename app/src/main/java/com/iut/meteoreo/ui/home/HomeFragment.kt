@@ -46,7 +46,6 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.getStation(1)
-        homeViewModel.getLastDays()
 //        homeViewModel.fakeValue()
         return binding.root
     }
