@@ -9,7 +9,11 @@ fun Long.timestampToHour(): String {
     return DateTimeFormatter.ofPattern("HH:mm", Locale("fr")).format(date)
 }
 
-fun Long.timestampToDate(): String {
+fun Long.timestampToDayMonth(): String {
     val date = LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
     return DateTimeFormatter.ofPattern("dd MMMM", Locale("fr")).format(date)
+}
+
+fun Long.timestampToDate(): Date {
+    return Date(this)
 }

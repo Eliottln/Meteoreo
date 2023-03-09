@@ -1,4 +1,4 @@
-package com.iut.meteoreo.ui.gallery
+package com.iut.meteoreo.ui.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

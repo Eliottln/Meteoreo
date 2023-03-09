@@ -1,4 +1,4 @@
-package com.iut.meteoreo.ui.gallery
+package com.iut.meteoreo.ui.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.iut.meteoreo.R
 import com.iut.meteoreo.databinding.FragmentDayDetailsBinding
-import com.iut.meteoreo.extensions.timestampToDate
-import com.iut.meteoreo.ui.gallery.adapter.DayDetailsAdapter
+import com.iut.meteoreo.extensions.timestampToDayMonth
+import com.iut.meteoreo.ui.details.adapter.DayDetailsAdapter
 
 class DayDetailsFragment : Fragment() {
 
@@ -23,20 +23,19 @@ class DayDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val detailsViewModel = ViewModelProvider(this).get(DayDetailsViewModel::class.java)
+        val detailsViewModel = ViewModelProvider(requireActivity()).get(DayDetailsViewModel::class.java)
         binding = FragmentDayDetailsBinding.inflate(inflater, container, false)
         arguments?.let {
             timestamp = it.getLong("timestamp")
         }
 
-        val daysListAdapter = DayDetailsAdapter {
-        }
+        val daysListAdapter = DayDetailsAdapter()
+        binding.dayRecyclerview.adapter = daysListAdapter
+        binding.dayRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.buttonGraph.setOnClickListener {
             findNavController().navigate(R.id.action_nav_day_details_to_nav_chart)
         }
-        binding.date.text = timestamp?.timestampToDate()
-        binding.dayRecyclerview.adapter = daysListAdapter
-        binding.dayRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.date.text = timestamp?.timestampToDayMonth()
 
         detailsViewModel.daysMeasures.observe(viewLifecycleOwner) {
             daysListAdapter.measuresList = it

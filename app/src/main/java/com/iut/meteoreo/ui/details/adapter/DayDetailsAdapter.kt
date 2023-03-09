@@ -1,4 +1,4 @@
-package com.iut.meteoreo.ui.gallery.adapter
+package com.iut.meteoreo.ui.details.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import com.iut.meteoreo.data.Measure
 import com.iut.meteoreo.databinding.ItemDayDetailsBinding
 import com.iut.meteoreo.extensions.timestampToHour
 
-class DayDetailsAdapter(private var onItemClicked: (timestamp: Long) -> Unit) : RecyclerView.Adapter<DayDetailsAdapter.ViewHolder>() {
+class DayDetailsAdapter : RecyclerView.Adapter<DayDetailsAdapter.ViewHolder>() {
 
     var measuresList: ArrayList<Measure> = arrayListOf()
 
@@ -22,9 +22,6 @@ class DayDetailsAdapter(private var onItemClicked: (timestamp: Long) -> Unit) : 
             binding.uvValue.text = "${measure.uvValue}"
             binding.pressureValue.text = "${measure.airPressure} hPa"
 
-            root.setOnClickListener {
-//                onItemClicked()
-            }
         }
     }
 
