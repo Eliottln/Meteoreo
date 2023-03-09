@@ -17,7 +17,7 @@ class HomeDaysAdapter(private var onItemClicked: (timestamp: Long) -> Unit) : Re
         fun bind(day: DayTemperature) = binding.apply {
 
             binding.day.text = day.day.toDayOfWeek()
-            binding.temp.text = "${day.maxTemperature?.temperature}°C / ${day.minTemperature?.temperature}°C"
+            binding.temp.text = "${day.maxTemperature?.temperature ?: "?"}°C / ${day.minTemperature?.temperature ?: "?"}°C"
 
             root.setOnClickListener {
                 onItemClicked(day.day.timestampStartOfDay())

@@ -56,18 +56,21 @@ class HomeViewModel : ViewModel() {
                 .startAt(date.timestampStartOfDay().toString())
                 .endBefore(date.timestampNextDay().toString())
 
-            query.limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     var maxTemp = Measure()
                     for (postSnapshot in dataSnapshot.children) {
-                        maxTemp = postSnapshot.getValue(Measure::class.java)!!
+                        val temp = postSnapshot.getValue(Measure::class.java)!!
+                        if (maxTemp.temperature == null) maxTemp = temp
+                        else if (temp.temperature!! > maxTemp.temperature!!) maxTemp = temp
                     }
-                    query.limitToFirst(1)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                    query.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 var minTemp = Measure()
                                 for (postSnapshot in dataSnapshot.children) {
-                                    minTemp = postSnapshot.getValue(Measure::class.java)!!
+                                    val temp = postSnapshot.getValue(Measure::class.java)!!
+                                    if (minTemp.temperature == null) minTemp = temp
+                                    else if (temp.temperature!! < minTemp.temperature!!) minTemp = temp
                                 }
                                 _daysMeasures[day] = DayTemperature(date, maxTemp, minTemp)
                                 _lastDaysMeasures.value = ArrayList(_daysMeasures)

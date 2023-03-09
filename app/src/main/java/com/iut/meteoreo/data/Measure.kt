@@ -2,7 +2,7 @@ package com.iut.meteoreo.data
 
 data class Measure(
     val timestamp: String? = "",
-    val temperature: Double = 0.0,
+    val temperature: Double? = null,
     val windSpeed: Double? = null,
     val windDirection: Double? = null,
     val airPressure: Double? = null,
