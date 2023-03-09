@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.iut.meteoreo.R
 import com.iut.meteoreo.databinding.FragmentDayDetailsBinding
 import com.iut.meteoreo.extensions.timestampToDate
 import com.iut.meteoreo.ui.gallery.adapter.DayDetailsAdapter
@@ -28,7 +30,9 @@ class DayDetailsFragment : Fragment() {
         }
 
         val daysListAdapter = DayDetailsAdapter {
-
+        }
+        binding.buttonGraph.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_day_details_to_nav_chart)
         }
         binding.date.text = timestamp?.timestampToDate()
         binding.dayRecyclerview.adapter = daysListAdapter
