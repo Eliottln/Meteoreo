@@ -8,7 +8,7 @@ import com.iut.meteoreo.databinding.ItemPreviousDaysBinding
 import com.iut.meteoreo.extensions.timestampStartOfDay
 import com.iut.meteoreo.extensions.toDayOfWeek
 
-class HomeDaysAdapter(private var onItemClicked: (timestamp: String) -> Unit) : RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
+class HomeDaysAdapter(private var onItemClicked: (timestamp: Long) -> Unit) : RecyclerView.Adapter<HomeDaysAdapter.ViewHolder>() {
 
     var daysList: ArrayList<DayTemperature> = arrayListOf()
 
@@ -20,7 +20,7 @@ class HomeDaysAdapter(private var onItemClicked: (timestamp: String) -> Unit) : 
             binding.temp.text = "${day.maxTemperature?.temperature}°C / ${day.minTemperature?.temperature}°C"
 
             root.setOnClickListener {
-                onItemClicked(day.day.timestampStartOfDay().toString())
+                onItemClicked(day.day.timestampStartOfDay())
             }
         }
     }

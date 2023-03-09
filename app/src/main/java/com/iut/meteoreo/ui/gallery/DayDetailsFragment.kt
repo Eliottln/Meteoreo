@@ -6,27 +6,40 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.iut.meteoreo.databinding.FragmentDayDetailsBinding
+import com.iut.meteoreo.extensions.timestampToDate
+import com.iut.meteoreo.ui.gallery.adapter.DayDetailsAdapter
 
 class DayDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentDayDetailsBinding
-    private var timestamp: String? = null
+    private var timestamp: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val galleryViewModel = ViewModelProvider(this).get(DayDetailsViewModel::class.java)
+        val detailsViewModel = ViewModelProvider(this).get(DayDetailsViewModel::class.java)
         binding = FragmentDayDetailsBinding.inflate(inflater, container, false)
         arguments?.let {
-            timestamp = it.getString("timestamp")
+            timestamp = it.getLong("timestamp")
         }
 
-        galleryViewModel.lastDaysMeasures.observe(viewLifecycleOwner) {
+        val daysListAdapter = DayDetailsAdapter {
 
         }
+        binding.date.text = timestamp?.timestampToDate()
+        binding.dayRecyclerview.adapter = daysListAdapter
+        binding.dayRecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        detailsViewModel.daysMeasures.observe(viewLifecycleOwner) {
+            daysListAdapter.measuresList = it
+            daysListAdapter.notifyDataSetChanged()
+        }
+
+        timestamp?.let { detailsViewModel.getDayMeasures(it) }
 
         return binding.root
     }
